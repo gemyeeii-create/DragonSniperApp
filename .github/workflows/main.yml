@@ -5,20 +5,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-pip build-essential git python3-setuptools
-          pip3 install --upgrade pip
-          # تثبيت المكتبات اللي كودك محتاجها
-          pip3 install kivy pandas yfinance mplfinance requests
-          # حل مشكلة مكتبة التحليل الفني
-          pip3 install pandas-ta==0.3.14b0 --no-deps
-
-      - name: Buildozer Android Build
-        uses: ArtemGrubin/buildozer-action@v1
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          command: buildozer android debug
-          buildozer_version: stable
+          python-version: '3.11'
+
+      - name: Install Buildozer dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y python3-pip build-essential git python3-setuptools libffi-dev libssl-dev
+          pip3 install --user --upgrade buildozer
+
+      - name: Build with Buildozer
+        run: |
+          # هنا بنبني الـ APK مباشرة
+          buildozer android debug
