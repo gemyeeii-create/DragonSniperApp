@@ -1,27 +1,24 @@
-name: Build Dragon Sniper APK
-on: [push, pull_request]
+name: Build Dragon APK
+on: [push]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      - name: Install Build Dependencies
+      - name: Install Dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install kivy pandas yfinance mplfinance requests
-          # تثبيت مكتبة التحليل الفني بدون قيود النسخة
-          pip install pandas-ta==0.3.14b0 --no-deps 
+          sudo apt-get update
+          sudo apt-get install -y python3-pip build-essential git python3-setuptools
+          pip3 install --upgrade pip
+          # تثبيت المكتبات اللي كودك محتاجها
+          pip3 install kivy pandas yfinance mplfinance requests
+          # حل مشكلة مكتبة التحليل الفني
+          pip3 install pandas-ta==0.3.14b0 --no-deps
 
-      - name: Build with Buildozer
+      - name: Buildozer Android Build
         uses: ArtemGrubin/buildozer-action@v1
         with:
-          buildozer_version: stable
           command: buildozer android debug
-          repository_root: .
+          buildozer_version: stable
