@@ -1,5 +1,27 @@
-- name: Install Dependencies
+name: Build Dragon Sniper APK
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Build Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install kivy pandas yfinance mplfinance requests
-          pip install pandas-ta==0.3.14b0 --no-deps
+          # تثبيت مكتبة التحليل الفني بدون قيود النسخة
+          pip install pandas-ta==0.3.14b0 --no-deps 
+
+      - name: Build with Buildozer
+        uses: ArtemGrubin/buildozer-action@v1
+        with:
+          buildozer_version: stable
+          command: buildozer android debug
+          repository_root: .
