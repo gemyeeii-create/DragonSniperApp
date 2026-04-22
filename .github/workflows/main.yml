@@ -1,12 +1,29 @@
-- name: Install Buildozer dependencies
+name: Build Dragon APK
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install System Dependencies
         run: |
           sudo apt update
-          sudo apt install -y python3-pip build-essential git python3-setuptools libffi-dev libssl-dev
-          # السطر السحري اللي كان ناقص:
-          pip3 install --user --upgrade buildozer cython wheel 
+          sudo apt install -y python3-pip build-essential git python3-setuptools libffi-dev libssl-dev libltdl-dev
+          # تثبيت الأدوات اللي السيرفر بيشتكي منها
+          pip3 install --user --upgrade pip buildozer cython wheel
 
       - name: Build with Buildozer
         run: |
-          # تأكد إننا بنستخدم المسار الصح للـ buildozer
+          # إضافة مسار الأدوات للنظام عشان يشوف الـ buildozer والـ cython
           export PATH=$PATH:~/.local/bin
+          # أمر المسح عشان لو فيه بقايا قديمة بتبوظ الـ Build
+          buildozer android clean
+          # البدء في بناء الـ APK
           buildozer android debug
