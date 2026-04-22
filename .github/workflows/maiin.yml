@@ -1,0 +1,12 @@
+- name: Install Buildozer dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y python3-pip build-essential git python3-setuptools libffi-dev libssl-dev
+          # السطر السحري اللي كان ناقص:
+          pip3 install --user --upgrade buildozer cython wheel 
+
+      - name: Build with Buildozer
+        run: |
+          # تأكد إننا بنستخدم المسار الصح للـ buildozer
+          export PATH=$PATH:~/.local/bin
+          buildozer android debug
