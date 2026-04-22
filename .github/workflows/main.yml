@@ -1,27 +1,23 @@
-name: Build Dragon APK
+name: Build Dragon Sniper APK
 on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      - name: Install System Dependencies
+      - name: Install Dependencies
         run: |
           sudo apt update
-          sudo apt install -y python3-pip build-essential git python3-setuptools libffi-dev libssl-dev cmake
-          pip3 install --user --upgrade buildozer cython wheel 
+          sudo apt install -y python3-pip build-essential git python3-setuptools libffi-dev libssl-dev cmake libtool autoconf
+          # تثبيت الأدوات الأساسية للبناء
+          pip3 install --user --upgrade buildozer cython==0.29.33 wheel 
 
       - name: Build APK
         run: |
           export PATH=$PATH:~/.local/bin
-          # السطر ده هينظف أي مسارات غلط قديمة
-          buildozer android clean
-          # السطر ده هيبني الـ APK ويطلع لنا التفاصيل لو فشل
+          # حذف أي ملفات بناء قديمة تالفة
+          rm -rf .buildozer/
+          # بناء APK جديد مع إظهار التفاصيل
           buildozer -v android debug
