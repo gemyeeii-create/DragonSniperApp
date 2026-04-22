@@ -12,18 +12,16 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install System Dependencies
+      - name: Install Buildozer dependencies
         run: |
           sudo apt update
-          sudo apt install -y python3-pip build-essential git python3-setuptools libffi-dev libssl-dev libltdl-dev
-          # تثبيت الأدوات اللي السيرفر بيشتكي منها
-          pip3 install --user --upgrade pip buildozer cython wheel
+          sudo apt install -y python3-pip build-essential git python3-setuptools libffi-dev libssl-dev
+          pip3 install --user --upgrade buildozer cython wheel 
 
       - name: Build with Buildozer
         run: |
-          # إضافة مسار الأدوات للنظام عشان يشوف الـ buildozer والـ cython
           export PATH=$PATH:~/.local/bin
-          # أمر المسح عشان لو فيه بقايا قديمة بتبوظ الـ Build
+          # تنظيف أي محاولة بناء قديمة فاشلة
           buildozer android clean
-          # البدء في بناء الـ APK
+          # البدء ببناء APK جديد (Debug)
           buildozer android debug
